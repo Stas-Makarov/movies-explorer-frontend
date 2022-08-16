@@ -1,4 +1,5 @@
 import "./AboutMe.css";
+import avatar from "../../images/ava.svg";
 
 export function AboutMe() {
   return (
@@ -27,7 +28,7 @@ export function AboutMe() {
             </a>
           </div>
         </div>
-        <div className="about__content_photo"></div>
+        <img className="about__content_photo" src={avatar} alt='avatar' />
       </div>
     </section>
   );

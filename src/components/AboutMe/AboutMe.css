@@ -25,9 +25,6 @@
 .about__content_photo {
     width: 270px;
     height: 327px;
-    background-image: url(../../images/ava.svg);
-    background-size: cover;
-    background-position: center center;
     margin-top: 60px;
     border-radius: 10px;
 }
@@ -56,6 +53,7 @@
     font-size: 14px;
     line-height: 22px;
     max-width: 600px;
+    margin-right: 90px;
 }
 
 .about__content_links {
@@ -92,6 +90,7 @@
         font-size: 12px;
         line-height: 18px;
         margin-bottom: 20px;
+        margin-right: 49px;
     }
 
     .about__content_description {
@@ -99,6 +98,7 @@
         margin-bottom: 87px;
         font-size: 12px;
         line-height: 18px;
+        margin-right: 49px;
     }
 
     .about__content_photo {

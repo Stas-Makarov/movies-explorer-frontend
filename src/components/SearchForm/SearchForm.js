@@ -10,6 +10,7 @@ export const SearchForm = () => {
           className="search-form__input"
           type="text"
           placeholder="Фильм"
+          required
         />
         <div className="search-form__right">
           <button
@@ -21,7 +22,7 @@ export const SearchForm = () => {
           <FilterCheckbox />
         </div>
       </form>
-      <span className="search-form__error">Нужно ввести ключевое слово</span>
+      <span className="search-form__error"></span>
       <div className="filter-checkbox_mobile">
         <FilterCheckbox />
       </div>

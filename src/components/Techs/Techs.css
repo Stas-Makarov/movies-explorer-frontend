@@ -93,11 +93,22 @@
     }
 
     .techs__list_element {
-        width: 10.937vw;
-        height: 57px;
+        width: 84px;
+        min-height: 57px;
         font-size: 12px;
         line-height: 14.52px;
     }
+
+    .techs__list {
+        margin-bottom: 70px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+        gap: 10px;
+        padding-left: 53px;
+        padding-right: 53px;
+        padding-bottom: 0;
+    }
+
 }
 
 @media screen and (max-width: 580px) {

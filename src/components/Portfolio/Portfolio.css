@@ -1,95 +1,96 @@
 .portfolio {
-  width: 89.06%;
-  margin: 0 auto 125px;
+  margin-bottom: 125px;
+  padding: 0 70px;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .portfolio__title {
-  font-style: normal;
   font-weight: 400;
   font-size: 18px;
   line-height: 20px;
-  color: #A0A0A0;
-  margin: 0 0 50px 0;
+  color: #a0a0a0;
+  margin: 0 0 30px 0;
 }
 
-.portfolio__job {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 19px;
-  border-bottom: 1px solid #E6E6E6;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.portfolio__job:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-  margin-bottom: 0;
-}
-
-.potfolio__job_text {
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 50px;
-  letter-spacing: -0.04em;
-  text-align: left;
-  color: #000000;
+.portfolio__list {
+  padding: 0;
   margin: 0;
 }
 
-.portfolio__job_link {
-  width: 29px;
-  height: 60px;
-  background-image: url("../../images/link.svg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
-  transition: 1s;
+.portfolio__list-item {
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 50px;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+  padding: 20px 0 19px 0;
+  margin: 0;
+  list-style: none;
+  border-bottom: 1px solid #e8e8e8;
 }
 
-.portfolio__job_link:hover {
-  opacity: 0.7;
+.portfolio__list-item:last-child {
+  border-bottom: none;
+}
+
+.portfolio__list-item-src {
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  color: black;
+  transition: 0.2s linear;
+}
+
+.portfolio__list-item-src:hover {
+  opacity: 0.8;
+  transition: 0.2s linear;
+}
+
+.portfolio__list-item-text {
+  margin: 0;
+  padding: 0;
+}
+
+.portfolio__list-item-image {
+  width: 29px;
+  height: 60px;
 }
 
 @media screen and (max-width: 768px) {
   .portfolio {
-    width: 86.98%;
+    padding: 90px 50px 0 50px;
     margin-bottom: 90px;
   }
 
-  .portfolio__job {
-    border-bottom: 1px solid #E6E6E6;
-  }
-
-  .potfolio__job_text {
+  .portfolio__list-item {
     font-size: 28px;
-  }
-
-  .portfolio__job_link {
-    width: 27px;
+    line-height: 50px;
   }
 }
 
+
 @media screen and (max-width: 524px) {
   .portfolio {
-    width: 87.25%;
-    margin: 0 auto 70px;
+    padding: 69px 14px 0 14px;
+    margin-bottom: 70px;
   }
 
   .portfolio__title {
     font-size: 14px;
-    margin-bottom: 40px;
+    line-height: 20px;
+    margin-bottom: 20px;
   }
 
-  .potfolio__job_text {
-    font-size: 16px;
+  .portfolio__list-item {
+    font-size: 18px;
     line-height: 28px;
+    letter-spacing: -0.04em;
   }
 
-  .portfolio__job_link {
+  .portfolio__list-item-image {
     width: 18px;
     height: 28px;
-    background-image: url("../../images/linkMob.svg");
   }
 }
