@@ -1,10 +1,8 @@
 import React from "react";
-import { Header } from "../Header/Header";
 import "./Profile.css";
 export const Profile = () => {
   return (
     <section className="profle">
-      <Header />
       <h1 className="profile__title">Привет, </h1>
       <form className="profile__form" >
         <div className="profile__fields">

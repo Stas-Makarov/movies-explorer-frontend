@@ -18,6 +18,6 @@ export function Techs() {
         <li className="techs__list_element">Express.js</li>
         <li className="techs__list_element">mongoDB</li>
       </ul>
-    </section>
+  </section>
   );
 };
