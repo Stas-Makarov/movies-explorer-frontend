@@ -27,6 +27,7 @@
     height: 327px;
     margin-top: 60px;
     border-radius: 10px;
+    object-fit: cover;
 }
 
 .about__content_name {
