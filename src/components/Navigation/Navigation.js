@@ -2,7 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navigation.css";
 
-export const Navigation = (props) => {
+export const Navigation = ({
+  isLogged,
+  isMain,
+  isMovies,
+  isSavedMovies,
+  isProfile,
+  onClick,
+}) => {
   const [isShowBurgerMenu, setIsShowBurgerMenu] = useState(false);
   const showBurgerMenu = () => {
     setIsShowBurgerMenu(true);
@@ -10,33 +17,59 @@ export const Navigation = (props) => {
   const closeBurgerMenu = () => {
     setIsShowBurgerMenu(false);
   };
+  
   return (
     <nav className="navigation">
-      {props.isLogged ? (
+      {isLogged ? (
         <>
-      <div className="navigation__logged">
-        <div className="navigation__links">
-          <Link to="/movies"
-                className="navigation__movie navigation__movie_thin"
-          >Фильмы</Link>
-          <Link to="/saved-movies"
-                className="navigation__movie navigation__movie_thin"
-          >Сохранённые фильмы</Link>
-        </div>
-        <Link to="/profile"
-              className="navigation__account navigation__account_main"
-        >Аккаунт</Link>
-      </div>
-      <button
-        className="navigation__burger-menu"
-        onClick={showBurgerMenu}
-      ></button>
-      </>
+          <div className="navigation__logged">
+            <div className="navigation__links">
+              <Link
+                to="/movies"
+                className={
+                  isMovies
+                    ? "navigation__movie"
+                    : "navigation__movie navigation__movie_thin"
+                }
+              >
+                Фильмы
+              </Link>
+              <Link
+                to="/saved-movies"
+                className={
+                  isSavedMovies
+                    ? "navigation__movie"
+                    : "navigation__movie navigation__movie_thin"
+                }
+              >
+                Сохранённые фильмы
+              </Link>
+            </div>
+            <Link
+              to="/profile"
+              className={
+                isMain
+                  ? "navigation__account navigation__account_main"
+                  : "navigation__account"
+              }
+            >
+              Аккаунт
+            </Link>
+          </div>
+          <button
+            className="navigation__burger-menu"
+            onClick={showBurgerMenu}
+          ></button>
+        </>
       ) : (
         <div className="navigation__links">
           <Link
             to="/signup"
-            className="navigation__link navigation__link_black"
+            className={
+              isMain
+                ? "navigation__link"
+                : "navigation__link navigation__link_black"
+            }
           >
             Регистрация
           </Link>
@@ -45,7 +78,6 @@ export const Navigation = (props) => {
           </Link>
         </div>
       )}
-            
       {isShowBurgerMenu ? (
         <div className="burger-menu">
           <div className="burger-menu__container">
@@ -56,19 +88,47 @@ export const Navigation = (props) => {
             ></button>
             <div className="burger-menu__content">
               <div className="burger-menu__links">
-                <Link className="burger-menu__link burger-menu__decoration"
-                      to="/"
-                >Главная</Link>
-                <Link className="burger-menu__link burger-menu__decoration"
-                      to="/movies"
-                >Фильмы</Link>
-                <Link className="burger-menu__link burger-menu__decoration"
-                      to="/saved-movies"
-                >Сохранённые фильмы</Link>
+                <Link
+                  className={
+                    isMain
+                      ? "burger-menu__link burger-menu__decoration"
+                      : "burger-menu__link"
+                  }
+                  to="/"
+                >
+                  Главная
+                </Link>
+                <Link
+                  className={
+                    isMovies
+                      ? "burger-menu__link burger-menu__decoration"
+                      : "burger-menu__link"
+                  }
+                  to="/movies"
+                >
+                  Фильмы
+                </Link>
+                <Link
+                  className={
+                    isSavedMovies
+                      ? "burger-menu__link burger-menu__decoration"
+                      : "burger-menu__link"
+                  }
+                  to="/saved-movies"
+                >
+                  Сохранённые фильмы
+                </Link>
               </div>
-              <Link className="burger-menu__profile burger-menu__decoration-profile"
-                    to="/profile"
-              >Аккаунт</Link>
+              <Link
+                className={
+                  isProfile
+                    ? "burger-menu__profile burger-menu__decoration-profile"
+                    : "burger-menu__profile"
+                }
+                to="/profile"
+              >
+                Аккаунт
+              </Link>
             </div>
           </div>
         </div>

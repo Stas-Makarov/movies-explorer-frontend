@@ -1,7 +1,7 @@
 import { NavTab } from "../NavTab/NavTab";
 import "./Promo.css";
 
-export function Promo(props) {
+export function Promo() {
   return (
     <>
       <section className="promo">
