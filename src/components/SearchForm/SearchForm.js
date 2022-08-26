@@ -36,6 +36,8 @@ export const SearchForm = ({
           value={textInput}
           type="text"
           placeholder="Фильм"
+          minLength="1"
+          autoComplete="off"
           required
         />
         <div className="search-form__right">

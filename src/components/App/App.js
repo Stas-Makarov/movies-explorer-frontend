@@ -110,7 +110,7 @@ function App() {
           .then((data) => {
             if (data._id) {
               handleLogin({ email, password });
-              // setPopupImage(Sucsess);
+              setPopupImage(Sucsess);
               // setPopupText("Вы успешно зарегистрировались!");
               // handleInfoTooltip();
               // history('/movies', { replace: true });
@@ -363,6 +363,9 @@ function App() {
         if (pathname === "/saved-movies") {
           setFilterSavedMoviesCollection(savedMoviesCollection);
         }
+        if (pathname === "/movies") {
+          setFilterSavedMoviesCollection(savedMoviesCollection);
+        }
       }, [pathname]);
 
       useEffect(() => {
@@ -416,9 +419,6 @@ function App() {
             />
             <Route exact path="/movies" 
                   element={<ProtectedRoute isLogged={isLogged}>
-                              <Preloader
-                                  isLoadingMovies={isLoadingMovies}
-                              />
                               <Movies 
                                 isLogged={isLogged} 
                                 isFilterMovies={isFilterMovies}
@@ -438,9 +438,6 @@ function App() {
             />
             <Route exact path="/saved-movies" 
                   element={<ProtectedRoute isLogged={isLogged}>
-                              <Preloader
-                                  isLoadingMovies={isLoadingMovies}
-                              />
                               <SavedMovies 
                                 isLogged={isLogged} 
                                 isFilterSavedMovies={isFilterSavedMovies}
