@@ -420,6 +420,7 @@ function App() {
                                   isLoadingMovies={isLoadingMovies}
                               />
                               <Movies 
+                                isLogged={isLogged} 
                                 isFilterMovies={isFilterMovies}
                                 changeFilter={changeFilter}
                                 moviesCollection={isFilterMovies ? filterTimeMoviesCollection : foundMoviesList}
@@ -441,6 +442,7 @@ function App() {
                                   isLoadingMovies={isLoadingMovies}
                               />
                               <SavedMovies 
+                                isLogged={isLogged} 
                                 isFilterSavedMovies={isFilterSavedMovies}
                                 changeFilter={changeFilter}
                                 moviesCollection={isFilterSavedMovies ? filterTimeSavedMoviesCollection : filterSavedMoviesCollection}
@@ -459,6 +461,7 @@ function App() {
             <Route exact path="/profile"  
                   element={<ProtectedRoute isLogged={isLogged}>
                               <Profile 
+                                isLogged={isLogged} 
                                 onSignOut={handleSignOut}
                                 changeProfile={handlechangeProfile}
                                 profileError={profileError}
@@ -467,7 +470,7 @@ function App() {
                           </ProtectedRoute>}
             /> 
             <Route exact path="/signin"
-                  element={<ProtectedRoute isLogged={isLogged}>
+                  element={<ProtectedRoute isLogged={!isLogged}>
                               <Login 
                                 onLogin={handleLogin}
                                 loginError={loginError}
@@ -477,7 +480,7 @@ function App() {
                           </ProtectedRoute>}     
             />
             <Route path="/signup"
-                  element={<ProtectedRoute isLogged={isLogged}>
+                  element={<ProtectedRoute isLogged={!isLogged}>
                             <Register 
                               onRegister={handleRegister}
                               registerError={registerError}
