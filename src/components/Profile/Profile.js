@@ -44,8 +44,8 @@ export const Profile = ({
 
   useEffect(() => {
     if (
-      nameRef.current.value !== currentUser.name ||
-      emailRef.current.value !== currentUser.email
+      nameRef.current.value === currentUser.name &&
+      emailRef.current.value === currentUser.email
     ) {
       setIsUpdate(false);
     } else {

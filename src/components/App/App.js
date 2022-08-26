@@ -110,10 +110,10 @@ function App() {
           .then((data) => {
             if (data._id) {
               handleLogin({ email, password });
-              setPopupImage(Sucsess);
-              setPopupText("Вы успешно зарегистрировались!");
-              handleInfoTooltip();
-              history('/movies', { replace: true });
+              // setPopupImage(Sucsess);
+              // setPopupText("Вы успешно зарегистрировались!");
+              // handleInfoTooltip();
+              // history('/movies', { replace: true });
             }
           })
           .catch((err) => {
