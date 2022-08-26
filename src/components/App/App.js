@@ -111,13 +111,15 @@ function App() {
             if (data._id) {
               handleLogin({ email, password });
               setPopupImage(Sucsess);
-              // setPopupText("Вы успешно зарегистрировались!");
-              // handleInfoTooltip();
-              // history('/movies', { replace: true });
+              setPopupText("Вы успешно зарегистрировались!");
+              handleInfoTooltip();
+              setIsLogged(true);
+              history('/movies', { replace: true });
             }
           })
           .catch((err) => {
             setPopupImage(Fail);
+            setPopupText("Что-то пошло не так! Попробуйте ещё раз.");
             setRegisterError("Что-то пошло не так! Попробуйте ещё раз.");
             handleInfoTooltip();
           });
