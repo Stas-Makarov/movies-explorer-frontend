@@ -52,6 +52,7 @@ export const Register = ({
               required
               minLength="2"
               placeholder="Имя"
+              autoComplete="off"
             />
             <span className="register__error">{errors.name}</span>
           </div>
@@ -66,6 +67,7 @@ export const Register = ({
               placeholder="Email"
               required
               pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+              autoComplete="off"
             />
             <span className="register__error">{errors.email}</span>
           </div>
@@ -80,6 +82,7 @@ export const Register = ({
               required
               minLength="8"
               placeholder="Пароль"
+              autoComplete="off"
             />
             <span className="register__error">{errors.password}</span>
           </div>

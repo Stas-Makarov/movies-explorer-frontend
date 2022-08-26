@@ -16,6 +16,11 @@ import { NotFound } from "../NotFound/NotFound";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import * as MoviesApi from "../../utils/MoviesApi";
 import * as MainApi from "../../utils/MainApi";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import { Preloader } from "../Preloader/Preloader";
+import InfoTooltipPopup from "../InfoTooltipPopup/InfoTooltipPopup";
+import Sucsess from "../../images/sucsess.svg"
+import Fail from "../../images/fail.svg"
 
 function App() {
       const [currentUser, setCurrentUser] = useState({});
@@ -36,12 +41,15 @@ function App() {
       const [filterTimeSavedMoviesCollection, setFilterTimeSavedMoviesCollection] = useState([]);
       const [isLoadingMovies, setIsLoadingMovies] = useState(false);
       const [foundError, setFoundError] = useState(false);
+      const [popupImage, setPopupImage] = useState('');
+      const [popupText, setPopupText] = useState('');
+      const [infoTooltip, setInfoTooltip] = useState(false);
 
       const history = useNavigate();
       const pathname = useLocation();
       const isLocationMovies = pathname.pathname === "/movies";
       const isLocationSavedMovies = pathname.pathname === "/saved-movies";
-                        
+      
       function tokenCheck() {
         const jwt = localStorage.getItem("jwt");
         const movies = localStorage.getItem("movies");
@@ -102,12 +110,16 @@ function App() {
           .then((data) => {
             if (data._id) {
               handleLogin({ email, password });
+              setPopupImage(Sucsess);
+              setPopupText("Вы успешно зарегистрировались!");
+              handleInfoTooltip();
+              history('/movies', { replace: true });
             }
           })
           .catch((err) => {
+            setPopupImage(Fail);
             setRegisterError("Что-то пошло не так! Попробуйте ещё раз.");
-            if (err === 400)
-              return setRegisterError("Некорректно заполнено одно из полей ");
+            handleInfoTooltip();
           });
       }
     
@@ -117,6 +129,9 @@ function App() {
             if (res.token) {
               setToken(res.token);
               localStorage.setItem("jwt", res.token);
+              setPopupImage(Sucsess);
+              setPopupText("Вы успешно авторизовались!");
+              handleInfoTooltip();
               setIsLogged(true);
               history('/movies', { replace: true });
               MainApi.getSavedMovies(res.token)
@@ -125,7 +140,9 @@ function App() {
                   setFilterSavedMoviesCollection(movies);
                   localStorage.setItem("savedMovies", JSON.stringify(movies));
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {
+                  console.log(err);
+                })
               MainApi.getContent(res.token)
                 .then((user) => {
                   setCurrentUser(user);
@@ -136,6 +153,9 @@ function App() {
             }
           })
           .catch((err) => {
+            setPopupImage(Fail);
+            setPopupText('Не верные имя пользователя или пароль.');
+            handleInfoTooltip();
             if (err === 400) return setLoginError("Не передано одно из полей");
             if (err === 401) return setLoginError("Пользователь с email не найден");
             setLoginError("Попробуйте еще раз!");
@@ -344,11 +364,25 @@ function App() {
           setFilterSavedMoviesCollection(savedMoviesCollection);
         }
       }, [pathname]);
+
+      useEffect(() => {
+        if (InfoTooltipPopup) {
+          const closeByEscape = (e) => {
+            if (e.key === 'Escape') {
+              closePopup();
+            }
+          }
+          document.addEventListener('keydown', closeByEscape);
+          return () => document.removeEventListener('keydown', closeByEscape)
+        }
+      }, [InfoTooltipPopup]);
     
       function handlechangeProfile({ name, email }) {
         MainApi.editUserProfile({ token, name, email })
           .then((newUser) => {
             if (newUser._id) {
+              setPopupImage(Sucsess);
+              setPopupText("Данные успешно изменены!")
               setCurrentUser(newUser);
               setProfileError("Данные профиля успешно изменены");
             } else if (newUser.message) {
@@ -358,75 +392,109 @@ function App() {
           .catch((err) =>
             setProfileError("Произошла ошибка при обновлении профиля")
           );
-      }    
+      }
+      
+      const closePopup = () => {
+        setInfoTooltip(false);
+      }
+    
+      const handleClickOutside = (e) => {
+        if (e.target.classList.contains('popup_is-opened')) {
+          closePopup();
+        }
+      }
+    
+      const handleInfoTooltip = () => {
+        setInfoTooltip(true);
+      }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
         <Routes>
             <Route exact path="/"
                   element={<Main isLogged={isLogged} />}
-            />      
+            />
             <Route exact path="/movies" 
-                  element={<Movies 
-                              isLogged={isLogged}
-                              isFilterMovies={isFilterMovies}
-                              changeFilter={changeFilter}
-                              moviesCollection={isFilterMovies ? filterTimeMoviesCollection : foundMoviesList}
-                              searchMovies={searchMovies}
-                              searchSavedMovies={searchSavedMovies}
-                              isLoadingMovies={isLoadingMovies}
-                              savedMovies={savedMoviesCollection}
-                              movieDeleteFromSavedMovies={movieDeleteFromSavedMovies}
-                              movieSaveInStore={movieSaveInStore}
-                              foundError={foundError}
-                              serverError={serverError}
-                              clearAllErrors={clearAllErrors}
-                            />}
+                  element={<ProtectedRoute isLogged={isLogged}>
+                              <Preloader
+                                  isLoadingMovies={isLoadingMovies}
+                              />
+                              <Movies 
+                                isFilterMovies={isFilterMovies}
+                                changeFilter={changeFilter}
+                                moviesCollection={isFilterMovies ? filterTimeMoviesCollection : foundMoviesList}
+                                searchMovies={searchMovies}
+                                searchSavedMovies={searchSavedMovies}
+                                isLoadingMovies={isLoadingMovies}
+                                savedMovies={savedMoviesCollection}
+                                movieDeleteFromSavedMovies={movieDeleteFromSavedMovies}
+                                movieSaveInStore={movieSaveInStore}
+                                foundError={foundError}
+                                serverError={serverError}
+                                clearAllErrors={clearAllErrors}
+                            />
+                          </ProtectedRoute>}
             />
             <Route exact path="/saved-movies" 
-                  element={<SavedMovies 
-                              isLogged={isLogged}
-                              isFilterSavedMovies={isFilterSavedMovies}
-                              changeFilter={changeFilter}
-                              moviesCollection={isFilterSavedMovies ? filterTimeSavedMoviesCollection : filterSavedMoviesCollection}
-                              searchMovies={searchMovies}
-                              searchSavedMovies={searchSavedMovies}
-                              isLoadingMovies={isLoadingMovies}
-                              savedMovies={savedMoviesCollection}
-                              movieDeleteFromSavedMovies={movieDeleteFromSavedMovies}
-                              movieSaveInStore={movieSaveInStore}
-                              foundError={foundError}
-                              serverError={serverError}
-                              clearAllErrors={clearAllErrors}
-                            />} 
+                  element={<ProtectedRoute isLogged={isLogged}>
+                              <Preloader
+                                  isLoadingMovies={isLoadingMovies}
+                              />
+                              <SavedMovies 
+                                isFilterSavedMovies={isFilterSavedMovies}
+                                changeFilter={changeFilter}
+                                moviesCollection={isFilterSavedMovies ? filterTimeSavedMoviesCollection : filterSavedMoviesCollection}
+                                searchMovies={searchMovies}
+                                searchSavedMovies={searchSavedMovies}
+                                isLoadingMovies={isLoadingMovies}
+                                savedMovies={savedMoviesCollection}
+                                movieDeleteFromSavedMovies={movieDeleteFromSavedMovies}
+                                movieSaveInStore={movieSaveInStore}
+                                foundError={foundError}
+                                serverError={serverError}
+                                clearAllErrors={clearAllErrors}
+                              />
+                          </ProtectedRoute>} 
             />
             <Route exact path="/profile"  
-                  element={<Profile 
-                              isLogged={isLogged}
-                              onSignOut={handleSignOut}
-                              changeProfile={handlechangeProfile}
-                              profileError={profileError}
-                              setProfileError={setProfileError}
-                          />}
-            />
+                  element={<ProtectedRoute isLogged={isLogged}>
+                              <Profile 
+                                onSignOut={handleSignOut}
+                                changeProfile={handlechangeProfile}
+                                profileError={profileError}
+                                setProfileError={setProfileError}
+                              />
+                          </ProtectedRoute>}
+            /> 
             <Route exact path="/signin"
-                  element={<Login 
-                              onLogin={handleLogin}
-                              loginError={loginError}
-                              setLoginError={setLoginError}
-                              clearErrors={clearAllErrors}
-                          />}     
+                  element={<ProtectedRoute isLogged={!isLogged}>
+                              <Login 
+                                onLogin={handleLogin}
+                                loginError={loginError}
+                                setLoginError={setLoginError}
+                                clearErrors={clearAllErrors}
+                              />
+                          </ProtectedRoute>}     
             />
-            <Route exact path="/signup"
-                  element={<Register 
-                          onRegister={handleRegister}
-                          registerError={registerError}
-                          setRegisterError={setRegisterError}
-                          clearErrors={clearAllErrors}
-                          />}    
+            <Route path="/signup"
+                  element={<ProtectedRoute isLogged={!isLogged}>
+                            <Register 
+                              onRegister={handleRegister}
+                              registerError={registerError}
+                              setRegisterError={setRegisterError}
+                              clearErrors={clearAllErrors}
+                            />
+                          </ProtectedRoute>}    
             />
             <Route path="*" element={<NotFound />} />
         </Routes>
+        <InfoTooltipPopup
+              isOpen={infoTooltip}
+              onClose={closePopup}
+              onCloseOnOverlay={handleClickOutside}
+              image={popupImage}
+              text={popupText}
+        />
     </CurrentUserContext.Provider>
   );
 }

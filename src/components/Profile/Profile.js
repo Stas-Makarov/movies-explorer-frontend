@@ -44,8 +44,8 @@ export const Profile = ({
 
   useEffect(() => {
     if (
-      nameRef.current.value === currentUser.name &&
-      emailRef.current.value === currentUser.email
+      nameRef.current.value !== currentUser.name ||
+      emailRef.current.value !== currentUser.email
     ) {
       setIsUpdate(false);
     } else {
@@ -86,8 +86,8 @@ export const Profile = ({
                 minLength="2"
                 required
               />
-              <span className="profile__error">{errors.name}</span>
             </div>
+            <span className="profile__error">{errors.name}</span>
             <div className="profile__field">
               <p className="profile__text">E-mail</p>
               <input
@@ -100,8 +100,8 @@ export const Profile = ({
                 type="email"
                 required
               />
-              <span className="profile__error">{errors.email}</span>
             </div>
+            <span className="profile__error">{errors.email}</span>
           </div>
           <div className="profile__buttons">
             <button
@@ -120,7 +120,7 @@ export const Profile = ({
               type="button"
               onClick={handleClickSignOut}
             >
-              Выйти из аккаунта{" "}
+              Выйти из аккаунта
             </button>
           </div>
         </form>

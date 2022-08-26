@@ -41,6 +41,7 @@ export const Login = ({ onLogin, loginError, setLoginError, clearErrors }) => {
               placeholder="Email"
               required
               pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+              autoComplete="off"
             />
             <span className="login__error">{errors.email}</span>
           </div>
@@ -55,6 +56,7 @@ export const Login = ({ onLogin, loginError, setLoginError, clearErrors }) => {
               placeholder="Пароль"
               required
               minLength="4"
+              autoComplete="off"
             />
             <span className="login__error">{errors.password}</span>
           </div>
