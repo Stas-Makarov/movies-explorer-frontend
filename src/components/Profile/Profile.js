@@ -85,6 +85,7 @@ export const Profile = ({
                 onChange={handleChangeInput}
                 minLength="2"
                 required
+                autoComplete="off"
               />
             </div>
             <span className="profile__error">{errors.name}</span>
@@ -97,8 +98,10 @@ export const Profile = ({
                 defaultValue={currentUser.email}
                 values={emailRef.current.value}
                 onChange={handleChangeInput}
+                pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
                 type="email"
                 required
+                autoComplete="off"
               />
             </div>
             <span className="profile__error">{errors.email}</span>
