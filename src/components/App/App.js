@@ -467,7 +467,7 @@ function App() {
                           </ProtectedRoute>}
             /> 
             <Route exact path="/signin"
-                  element={<ProtectedRoute isLogged={!isLogged}>
+                  element={<ProtectedRoute isLogged={isLogged}>
                               <Login 
                                 onLogin={handleLogin}
                                 loginError={loginError}
@@ -477,7 +477,7 @@ function App() {
                           </ProtectedRoute>}     
             />
             <Route path="/signup"
-                  element={<ProtectedRoute isLogged={!isLogged}>
+                  element={<ProtectedRoute isLogged={isLogged}>
                             <Register 
                               onRegister={handleRegister}
                               registerError={registerError}
