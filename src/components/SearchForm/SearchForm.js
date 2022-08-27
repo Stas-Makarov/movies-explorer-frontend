@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { FilterCheckbox } from "../FilterCheckbox/FilterCheckbox";
 import "./SearchForm.css";
+
 export const SearchForm = ({
   isSaved,
   searchMovies,

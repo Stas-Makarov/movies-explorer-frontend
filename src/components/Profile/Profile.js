@@ -44,14 +44,15 @@ export const Profile = ({
 
   useEffect(() => {
     if (
-      nameRef.current.value === currentUser.name &&
-      emailRef.current.value === currentUser.email
+      nameRef.current.value !== currentUser.name ||
+      emailRef.current.value !== currentUser.email
     ) {
       setIsUpdate(false);
     } else {
       setIsUpdate(true);
     }
   }, [
+    handleChangeInput,
     nameRef.current.value,
     emailRef.current.value,
     currentUser.name,

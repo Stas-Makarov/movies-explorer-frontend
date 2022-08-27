@@ -13,7 +13,6 @@ import { Login } from '../Login/Login';
 import { Register } from '../Register/Register';
 import { Profile } from "../Profile/Profile";
 import { NotFound } from "../NotFound/NotFound";
-import { Preloader } from "../Preloader/Preloader";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import * as MoviesApi from "../../utils/MoviesApi";
 import * as MainApi from "../../utils/MainApi";
@@ -107,17 +106,11 @@ function App() {
 
       function handleRegister({ email, password, name }) {
         MainApi.register({ email, password, name })
-          .then((data) => {
-            if (data._id) {
+          .then(() => {
               handleLogin({ email, password });
-              setPopupImage(Sucsess);
-              setPopupText("Вы успешно зарегистрировались!");
-              handleInfoTooltip();
-              setIsLogged(true);
-              history('/movies', { replace: true });
-            }
           })
-          .catch((err) => {
+          .then(() => history('/movies', { replace: true }))
+          .catch(() => {
             setPopupImage(Fail);
             setPopupText("Что-то пошло не так! Попробуйте ещё раз.");
             setRegisterError("Что-то пошло не так! Попробуйте ещё раз.");
@@ -132,7 +125,7 @@ function App() {
               setToken(res.token);
               localStorage.setItem("jwt", res.token);
               setPopupImage(Sucsess);
-              setPopupText("Вы успешно авторизовались!");
+              setPopupText("Успешный вход!");
               handleInfoTooltip();
               setIsLogged(true);
               history('/movies', { replace: true });
