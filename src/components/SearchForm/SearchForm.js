@@ -13,6 +13,7 @@ export const SearchForm = ({
 }) => {
   const [validForm, setValidForm] = useState(true);
   const [textInput, setTextInput] = useState("");
+
   function handleChangeInput(e) {
     setTextInput(e.target.value);
     setValidForm(e.target.checkValidity());
