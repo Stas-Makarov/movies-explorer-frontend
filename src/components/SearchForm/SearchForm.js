@@ -13,7 +13,9 @@ export const SearchForm = ({
 }) => {
   const [validForm, setValidForm] = useState(true);
   const [textInput, setTextInput] = useState("");
-
+  const [isFocused, setFocused] = useState(false);
+  const handleFocus = () => setFocused(true);
+  
   function handleChangeInput(e) {
     setTextInput(e.target.value);
     setValidForm(e.target.checkValidity());
@@ -36,16 +38,17 @@ export const SearchForm = ({
           className="search-form__input"
           onChange={handleChangeInput}
           value={textInput}
+          onFocus={handleFocus}
           type="text"
           placeholder="Фильм"
-          minLength="1"
+          minLength="4"
           autoComplete="off"
           required
         />
         <div className="search-form__right">
           <button
             className="search-form__button"
-            disabled={!validForm}
+            disabled={!textInput}
             type="submit"
           ></button>
         </div>
@@ -57,7 +60,7 @@ export const SearchForm = ({
           />
         </div>
       </form>
-      <span className="search-form__error">{validForm ? "" : "Нужно ввести ключевое слово"}</span>
+      <span className="search-form__error">{!validForm || (isFocused && !textInput)? "Нужно ввести ключевое слово" : ""}</span>
       <div className="filter-checkbox_mobile">
         <FilterCheckbox
           isFilterMovies={isFilterMovies}

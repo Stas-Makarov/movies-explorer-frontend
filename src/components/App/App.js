@@ -43,6 +43,7 @@ function App() {
       const [popupImage, setPopupImage] = useState('');
       const [popupText, setPopupText] = useState('');
       const [infoTooltip, setInfoTooltip] = useState(false);
+      const [originalRoute, setOriginalRoute] = useState('');
 
       const history = useNavigate();
       const pathname = useLocation();
@@ -56,6 +57,7 @@ function App() {
 
         if (jwt) {
           setToken(jwt);
+          setOriginalRoute(pathname.pathname);
           if (movies) {
             const result = JSON.parse(movies);
             setMoviesCollection(result);
@@ -103,6 +105,13 @@ function App() {
       useEffect(() => {
         tokenCheck();
       }, []);
+    
+      useEffect(() => {
+        if (currentUser.name && originalRoute)
+        history(originalRoute, { replace: true }); 
+        setOriginalRoute('');
+      }, [currentUser]);
+
 
       function handleRegister({ email, password, name }) {
         MainApi.register({ email, password, name })
