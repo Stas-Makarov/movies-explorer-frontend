@@ -110,9 +110,9 @@ export const Profile = ({
           <div className="profile__buttons">
             <button
               className={
-                isValid || isUpdate
-                  ? "profile__button-submit"
-                  : "profile__button-submit profile__button_invalid"
+                !isValid || !isUpdate
+                  ? "profile__button-submit profile__button_invalid"
+                  : "profile__button-submit"
               }
               disabled={!isValid || !isUpdate}
               type="submit"
