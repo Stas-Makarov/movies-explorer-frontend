@@ -360,6 +360,7 @@ function App() {
         clearAllErrors();
         if (pathname === "/saved-movies") {
           setFilterSavedMoviesCollection(savedMoviesCollection);
+          setFilterTimeSavedMoviesCollection(savedMoviesCollection);
         }
       }, [pathname]);
 
