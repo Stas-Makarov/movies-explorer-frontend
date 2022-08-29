@@ -357,10 +357,9 @@ function App() {
       }
 
       useEffect(() => {
-        clearAllErrors();
         if (pathname === "/saved-movies") {
+          setSavedMoviesCollection(savedMoviesCollection);
           setFilterSavedMoviesCollection(savedMoviesCollection);
-          setFilterTimeSavedMoviesCollection(savedMoviesCollection);
         }
       }, [pathname]);
 
