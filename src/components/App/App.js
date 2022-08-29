@@ -183,6 +183,7 @@ function App() {
         localStorage.removeItem("isCheckedSaved");
         localStorage.removeItem("shortResult");
         localStorage.removeItem("shortResultSaved");
+        localStorage.removeItem("searchText");
         setIsLogged(false);
         setMoviesCollection([]);
         setSavedMoviesCollection([]);

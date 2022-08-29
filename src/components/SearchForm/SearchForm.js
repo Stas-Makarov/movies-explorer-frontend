@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { FilterCheckbox } from "../FilterCheckbox/FilterCheckbox";
 import "./SearchForm.css";
@@ -15,6 +15,12 @@ export const SearchForm = ({
   const [textInput, setTextInput] = useState("");
   const [isFocused, setFocused] = useState(false);
   const handleFocus = () => setFocused(true);
+
+  useEffect(() => {
+    if (!isSaved) {
+      setTextInput(localStorage.getItem("searchText"));
+    }
+  }, [setTextInput, isSaved]);
   
   function handleChangeInput(e) {
     setTextInput(e.target.value);
@@ -24,6 +30,7 @@ export const SearchForm = ({
   function handleSearchMovies(e) {
     e.preventDefault();
     searchMovies(textInput);
+    localStorage.setItem("searchText", textInput);
   }
 
   function handleSearchSavedMovies(e) {
@@ -48,7 +55,7 @@ export const SearchForm = ({
         <div className="search-form__right">
           <button
             className="search-form__button"
-            disabled={!textInput}
+            disabled={!validForm}
             type="submit"
           ></button>
         </div>
