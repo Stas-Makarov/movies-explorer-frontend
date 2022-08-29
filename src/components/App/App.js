@@ -309,7 +309,7 @@ function App() {
                     setFoundError(true);
                   }
                   setFilterTimeSavedMoviesCollection(result);
-                  localStorage.setItem("shortResultSaved", JSON.stringify(result));
+                  // localStorage.setItem("shortResultSaved", JSON.stringify(result));
                 }
               }
             }
@@ -328,7 +328,7 @@ function App() {
               setFilterTimeSavedMoviesCollection((prev) => [...prev, res]);
               setFilterSavedMoviesCollection((prev) => [...prev, res]);
             } else {
-              // setFilterSavedMoviesCollection((prev) => [...prev, res]);
+              setFilterSavedMoviesCollection((prev) => [...prev, res]);
             }
           })
           .catch((err) => setServerError(true));
