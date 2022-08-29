@@ -48,7 +48,7 @@ export const SearchForm = ({
           onFocus={handleFocus}
           type="text"
           placeholder="Фильм"
-          minLength="4"
+          minLength="2"
           autoComplete="off"
           required
         />

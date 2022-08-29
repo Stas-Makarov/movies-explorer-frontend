@@ -68,9 +68,9 @@ export const Movies = ({
   }
 
   useEffect(() => {
-    window.addEventListener("resize", onChangeScreenWidth);
+    onChangeScreenWidth();
   }, []);
-
+  
   const moviesCollectionVisible = moviesCollection.slice(
     0,
     numberMoviesInDisplay

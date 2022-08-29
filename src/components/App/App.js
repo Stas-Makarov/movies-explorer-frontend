@@ -43,8 +43,7 @@ function App() {
       const [popupImage, setPopupImage] = useState('');
       const [popupText, setPopupText] = useState('');
       const [infoTooltip, setInfoTooltip] = useState(false);
-      const [originalRoute, setOriginalRoute] = useState('');
-
+      
       const history = useNavigate();
       const pathname = useLocation();
       const isLocationMovies = pathname.pathname === "/movies";
@@ -57,7 +56,6 @@ function App() {
 
         if (jwt) {
           setToken(jwt);
-          setOriginalRoute(pathname.pathname);
           if (movies) {
             const result = JSON.parse(movies);
             setMoviesCollection(result);
@@ -75,6 +73,8 @@ function App() {
             })
             .catch((err) => {
               setServerError(true);
+              setLoginError("Попробуйте еще раз!");
+              if (err === 401) return history('/signin', { replace: true });
             });
         }
       }
@@ -105,13 +105,6 @@ function App() {
       useEffect(() => {
         tokenCheck();
       }, []);
-    
-      useEffect(() => {
-        if (currentUser.name && originalRoute)
-        history(originalRoute, { replace: true }); 
-        setOriginalRoute('');
-      }, [currentUser]);
-
 
       function handleRegister({ email, password, name }) {
         MainApi.register({ email, password, name })
@@ -335,7 +328,7 @@ function App() {
               setFilterTimeSavedMoviesCollection((prev) => [...prev, res]);
               setFilterSavedMoviesCollection((prev) => [...prev, res]);
             } else {
-              setFilterSavedMoviesCollection((prev) => [...prev, res]);
+              // setFilterSavedMoviesCollection((prev) => [...prev, res]);
             }
           })
           .catch((err) => setServerError(true));
