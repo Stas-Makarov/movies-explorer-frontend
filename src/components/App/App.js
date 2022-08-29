@@ -309,7 +309,7 @@ function App() {
                     setFoundError(true);
                   }
                   setFilterTimeSavedMoviesCollection(result);
-                  // localStorage.setItem("shortResultSaved", JSON.stringify(result));
+                  localStorage.setItem("shortResultSaved", JSON.stringify(result));
                 }
               }
             }
@@ -359,7 +359,7 @@ function App() {
       useEffect(() => {
         clearAllErrors();
         if (pathname === "/saved-movies") {
-          setFilterSavedMoviesCollection(savedMoviesCollection);
+          // setFilterSavedMoviesCollection(savedMoviesCollection);
         }
         if (pathname === "/movies") {
           setFilterSavedMoviesCollection(savedMoviesCollection);
