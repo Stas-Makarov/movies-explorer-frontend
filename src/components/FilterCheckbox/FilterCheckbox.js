@@ -1,28 +1,17 @@
-import "./FilterCheckbox.css";
-import { useLocation } from "react-router-dom";
+import React from "react";
 
+import "./FilterCheckbox.css";
 
 export const FilterCheckbox = ({
-  isFilterMovies,
-  changeFilter,
-  isFilterSavedMovies,
+  value,
+  onChange
 }) => {
-  const location = useLocation();
-  const locationMovies = location.pathname === "/movies";
-
-  let checkboxClassName = `filter-checkbox__button ${
-    locationMovies && isFilterMovies
-      ? "filter-checkbox__button_inactive"
-      : "filter-checkbox__button"
-  } ${
-    !locationMovies && isFilterSavedMovies
-      ? "filter-checkbox__button_inactive"
-      : "filter-checkbox__button"
-  }`;
+  let checkboxClassName = `filter-checkbox__button ${ value ? "filter-checkbox__button_inactive": "filter-checkbox__button"}`;
 
   function handleChangeFilter() {
-    changeFilter();
+    onChange(!value);
   }
+
   return (
     <>
       <button className={checkboxClassName} type="button" onClick={handleChangeFilter}></button>

@@ -1,15 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { useUser } from "../../hooks/useUser";
 import "./Navigation.css";
 
-export const Navigation = ({
-  isLogged,
-  isMain,
-  isMovies,
-  isSavedMovies,
-  isProfile,
-  onClick,
-}) => {
+export const Navigation = () => {
   const [isShowBurgerMenu, setIsShowBurgerMenu] = useState(false);
   const showBurgerMenu = () => {
     setIsShowBurgerMenu(true);
@@ -17,44 +11,40 @@ export const Navigation = ({
   const closeBurgerMenu = () => {
     setIsShowBurgerMenu(false);
   };
+
+  const user = useUser(); 
   
   return (
     <nav className="navigation">
-      {isLogged ? (
+      {user ? (
         <>
           <div className="navigation__logged">
             <div className="navigation__links">
-              <Link
+              <NavLink
                 to="/movies"
-                className={
-                  isMovies
-                    ? "navigation__movie"
-                    : "navigation__movie navigation__movie_thin"
+                className={({ isActive }) =>
+                  isActive ? "navigation__movie navigation__movie_thin" : "navigation__movie"
                 }
               >
                 Фильмы
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/saved-movies"
-                className={
-                  isSavedMovies
-                    ? "navigation__movie"
-                    : "navigation__movie navigation__movie_thin"
+                className={({ isActive }) =>
+                  isActive ? "navigation__movie navigation__movie_thin" : "navigation__movie"
                 }
               >
                 Сохранённые фильмы
-              </Link>
+              </NavLink>
             </div>
-            <Link
+            <NavLink
               to="/profile"
-              className={
-                isMain
-                  ? "navigation__account navigation__account_main"
-                  : "navigation__account"
+              className={({ isActive }) =>
+                isActive ? "navigation__account navigation__account_main" : "navigation__account"
               }
             >
               Аккаунт
-            </Link>
+            </NavLink>
           </div>
           <button
             className="navigation__burger-menu"
@@ -63,19 +53,12 @@ export const Navigation = ({
         </>
       ) : (
         <div className="navigation__links">
-          <Link
-            to="/signup"
-            className={
-              isMain
-                ? "navigation__link"
-                : "navigation__link navigation__link_black"
-            }
-          >
+          <NavLink to="/signup" className="navigation__link">
             Регистрация
-          </Link>
-          <Link to="/signin" className="navigation__link">
+          </NavLink>
+          <NavLink to="/signin" className="navigation__link">
             Войти
-          </Link>
+          </NavLink>
         </div>
       )}
       {isShowBurgerMenu ? (
@@ -88,47 +71,39 @@ export const Navigation = ({
             ></button>
             <div className="burger-menu__content">
               <div className="burger-menu__links">
-                <Link
-                  className={
-                    isMain
-                      ? "burger-menu__link burger-menu__decoration"
-                      : "burger-menu__link"
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "burger-menu__link burger-menu__decoration" : "burger-menu__link"
                   }
                   to="/"
                 >
                   Главная
-                </Link>
-                <Link
-                  className={
-                    isMovies
-                      ? "burger-menu__link burger-menu__decoration"
-                      : "burger-menu__link"
+                </NavLink>
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "burger-menu__link burger-menu__decoration" : "burger-menu__link"
                   }
                   to="/movies"
                 >
                   Фильмы
-                </Link>
-                <Link
-                  className={
-                    isSavedMovies
-                      ? "burger-menu__link burger-menu__decoration"
-                      : "burger-menu__link"
+                </NavLink>
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "burger-menu__link burger-menu__decoration" : "burger-menu__link"
                   }
                   to="/saved-movies"
                 >
                   Сохранённые фильмы
-                </Link>
+                </NavLink>
               </div>
-              <Link
-                className={
-                  isProfile
-                    ? "burger-menu__profile burger-menu__decoration-profile"
-                    : "burger-menu__profile"
-                }
+              <NavLink
+              className={({ isActive }) =>
+                isActive ? "burger-menu__profile burger-menu__decoration-profile" : "burger-menu__profile"
+              }
                 to="/profile"
               >
                 Аккаунт
-              </Link>
+              </NavLink>
             </div>
           </div>
         </div>

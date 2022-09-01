@@ -6,7 +6,6 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { useValidation } from "../../hooks/useValidation";
 
 export const Profile = ({
-  isLogged,
   onSignOut,
   changeProfile,
   profileError,
@@ -61,13 +60,7 @@ export const Profile = ({
 
   return (
     <>
-      <Header
-        isLogged={isLogged}
-        isMain={false}
-        isProfile={true}
-        isMovies={false}
-        isSavedMovies={false}
-      />
+      <Header />
       <main>
         <section className="profle">
         <h1 className="profile__title">Привет, {currentUser.name}</h1>

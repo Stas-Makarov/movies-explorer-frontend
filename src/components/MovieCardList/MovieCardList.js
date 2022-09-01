@@ -3,33 +3,30 @@ import { Preloader } from "../Preloader/Preloader";
 import "./MovieCardList.css";
 
 export const MovieCardList = ({
-  moviesCollection,
-  isSaved,
-  isLoadingMovies,
-  savedMovies,
-  movieDeleteFromSavedMovies,
-  movieSaveInStore,
-  foundError,
-  serverError,
+  items,
+  onDelete,
+  onChangeFavorite,
+  isLoading
 }) => {
+
+  if (isLoading) {
+    return (
+      <section className="movie-card-list">
+        <Preloader isLoadingMovies={isLoading}/>
+      </section>
+    );
+  }
+
   return (
     <section className="movie-card-list">
-      <Preloader isLoadingMovies={isLoadingMovies}/>
-      <span className="search-form__error">
-        {foundError ? "Ничего не найдено" : ""}
-      </span>
-      <span className="server__error">
-        {serverError ? "Данный фильм содержит невалидные данные, поэтому невозможно добавить его в избранное" : ""}
-      </span>
+      {items.length === 0 && <span className="search-form__error">Ничего не найдено</span>}
       <ul className="movies__gallery">
-        {moviesCollection.map((movies) => (
+        {items.map((item) => (
             <MoviesCard
-              key={isSaved ? movies._id : movies.id}
-              movies={movies}
-              isSaved={isSaved}
-              savedMovies={savedMovies}
-              movieDeleteFromSavedMovies={movieDeleteFromSavedMovies}
-              movieSaveInStore={movieSaveInStore}
+              key={item.id}
+              movies={item}
+              onDelete={onDelete}
+              onChangeFavorite={onChangeFavorite}
             />
         ))}
       </ul>

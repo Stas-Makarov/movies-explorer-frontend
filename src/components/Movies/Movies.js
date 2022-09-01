@@ -1,30 +1,73 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Header } from "../Header/Header";
+import { useAuth } from "../../hooks/useAuth";
 import { MovieCardList } from "../MovieCardList/MovieCardList";
 import { SearchForm } from "../SearchForm/SearchForm";
 import { Footer } from "../Footer/Footer";
+import { getContent, saveMovie } from '../../utils/MainApi';
+import { search, normalizeMovie } from '../../utils/utils';
 
 import "./Movies.css";
 
-export const Movies = ({
-  isLogged,
-  changeFilter,
-  isFilterMovies,
-  moviesCollection,
-  searchSavedMovies,
-  searchMovies,
-  isLoadingMovies,
-  savedMovies,
-  movieDeleteFromSavedMovies,
-  movieSaveInStore,
-  foundError,
-  serverError,
-  clearAllErrors,
-}) => {
+export const Movies = () => {
+  const [items, setItems] = useState([]);
+  const [loadingStatus, setLoadingStatus] = useState('idle');
+  const [searchResult, setSearchResult] = useState([]);
+  const [filter, setFilter] = useState({});
+
+  const token = useAuth();
+
   useEffect(() => {
-    clearAllErrors();
+    const getData = () => {
+      setLoadingStatus('loading');
+      const movies = localStorage.getItem('movies');
+      if (movies) {
+        setItems(JSON.parse(movies));
+        setLoadingStatus('idle');
+        return;
+      }
+
+      getContent(token).then((items) => {
+        setItems(normalizeMovie(items));
+        setLoadingStatus('idle');
+      });
+    }
+
+    getData();
+  }, [token]);
+
+  useEffect(() => {
+    localStorage.setItem('movies', JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    const filter = localStorage.getItem('filter');
+    if (filter) {
+      const prevFilter = JSON.parse(filter);
+      setFilter(prevFilter);
+    }
   }, []);
+
+  useEffect(() => {
+    const newSearchResult = search(items, filter.text, filter.onlyShortMovies);
+    localStorage.setItem('filter', JSON.stringify(filter));
+    setSearchResult(newSearchResult);
+  }, [filter, items]);
+
+  const handleSearchFormSubmit = useCallback((text, onlyShortMovies) => {
+    setFilter({ text, onlyShortMovies });
+  }, [setFilter]);
+
+  const handleMovieSaveInStore = useCallback((item) => {
+    saveMovie({ token, item })
+          .then((res) => {
+            const movies = [...searchResult, res];
+            localStorage.setItem("savedMovies", JSON.stringify(movies));
+            setSearchResult((prev) => [...prev, res]);
+          })
+          // .catch((err) => setServerError(true));
+  }, [searchResult, token]);
 
   const [numberMoviesInDisplay, setNumberMoviesInDisplay] = useState(
     () => {
@@ -70,8 +113,8 @@ export const Movies = ({
   useEffect(() => {
     onChangeScreenWidth();
   }, []);
-  
-  const moviesCollectionVisible = moviesCollection.slice(
+ 
+  const dislayItems = searchResult.slice(
     0,
     numberMoviesInDisplay
   );
@@ -82,34 +125,19 @@ export const Movies = ({
 
   return (
     <>
-      <Header
-        isLogged={isLogged}
-        isMain={false}
-        isMovies={true}
-        isSavedMovies={false}
-        isProfile={false}
-      />
+      <Header />
       <main>
         <section className="movies">
-          <SearchForm 
-            isSaved={false}
-            searchMovies={searchMovies}
-            searchSavedMovies={searchSavedMovies}
-            isFilterMovies={isFilterMovies}
-            changeFilter={changeFilter}
-          />
+        <SearchForm onSubmit={handleSearchFormSubmit}/>
+
           <MovieCardList 
-            moviesCollection={moviesCollectionVisible}
-            isSaved={false}
-            isLoadingMovies={isLoadingMovies}
-            savedMovies={savedMovies}
-            movieDeleteFromSavedMovies={movieDeleteFromSavedMovies}
-            movieSaveInStore={movieSaveInStore}
-            foundError={foundError}
-            serverError={serverError}
+            items={dislayItems}
+            onChangeFavorite={handleMovieSaveInStore}
+            isLoading={loadingStatus === 'loading'}
+
           />
           <button
-            className={moviesCollectionVisible.length === moviesCollection.length ? "movies__more_hide"  : "movies__more"}
+            className={dislayItems.length === items.length ? "movies__more_hide"  : "movies__more"}
             type="button"
             onClick={addMoviesInCollectionVisible}
           >
