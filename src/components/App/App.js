@@ -86,6 +86,9 @@ function App() {
             if (res.token) {
               localStorage.setItem("jwt", res.token);
               setToken(res.token);
+              setPopupImage(Sucsess);
+              setPopupText("Успешный вход!");
+              handleInfoTooltip();
             }
           })
           .catch((err) => {
