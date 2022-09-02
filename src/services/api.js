@@ -1,6 +1,9 @@
-import { normalizeMovie, handleResponse } from './utils';
+import { normalizeMovie, handleResponse } from '../utils/utils';
 
 const BASE_URL = '';
+
+const BEATFILM_URL = "https://api.nomoreparties.co/beatfilm-movies";
+
 
 export const register = ({ email, password, name }) => {
   return fetch(`${BASE_URL}/signup`, {
@@ -32,7 +35,7 @@ export const authorize = ({ email, password }) => {
 };
 
 
-export const getContent = (token) => {
+export const getProfile = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
@@ -43,6 +46,17 @@ export const getContent = (token) => {
     credentials: 'include',
   }).then((res) => handleResponse(res));
 };
+
+export function getMovies() {
+  return fetch(BEATFILM_URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+  .then((res) => handleResponse(res))
+  .then((items) => items.map(normalizeMovie));
+}
 
 export const getSavedMovies = (token) => {
   return fetch(`${BASE_URL}/movies`, {
@@ -58,7 +72,7 @@ export const getSavedMovies = (token) => {
   .then((items) => items.map(normalizeMovie));
 };
 
-export const deleteSavedMovie = ({ token, id }) => {
+export const deleteMovie = (token, id) => {
   return fetch(`${BASE_URL}/movies/${id}`, {
     method: "DELETE",
     headers: {
@@ -84,7 +98,7 @@ export const deleteSavedMovie = ({ token, id }) => {
   });
 };
 
-export const saveMovie = ({ token, movie }) => {
+export const saveMovie = (token, movie) => {
   return fetch(`${BASE_URL}/movies`, {
     method: "POST",
     headers: {
@@ -123,7 +137,7 @@ export const saveMovie = ({ token, movie }) => {
   });
 };
 
-export const editUserProfile = ({ token, name, email }) => {
+export const editProfile = ( token, { name, email }) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "PATCH",
     headers: {

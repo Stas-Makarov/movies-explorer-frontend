@@ -26,4 +26,4 @@ export const handleResponse = (res) => {
     } 
   
     return Promise.reject(res.status);
-  };
+};

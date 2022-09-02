@@ -1,12 +1,10 @@
 import React from "react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../Header/Header";
-import { useAuth } from "../../hooks/useAuth";
+import { useApi } from "../../hooks/useApi";
 import { MovieCardList } from "../MovieCardList/MovieCardList";
 import { SearchForm } from "../SearchForm/SearchForm";
 import { Footer } from "../Footer/Footer";
-import { saveMovie, deleteSavedMovie } from '../../utils/MainApi';
-import { getInitialMovies  } from '../../utils/MoviesApi';
 import { search } from '../../utils/utils';
 
 import "./Movies.css";
@@ -19,7 +17,7 @@ export const Movies = () => {
     onlyShortMovies: false,
   });
 
-  const token = useAuth();
+  const api = useApi();
 
   useEffect(() => {
     const getData = () => {
@@ -37,7 +35,7 @@ export const Movies = () => {
 
   const handleSearchFormSubmit = (text, onlyShortMovies) => {
     setLoadingStatus('loading');
-    getInitialMovies().then((items) => {
+    api.getMovies().then((items) => {
       const searchResult = {
         items: search(items, text, onlyShortMovies),
         text,
@@ -54,7 +52,7 @@ export const Movies = () => {
     const savedMovieIndex = newItems.findIndex((movie) => id === movie.movieId);
 
     if (liked) {
-      saveMovie({ token, movie: newItems[savedMovieIndex] })
+      api.saveMovie(newItems[savedMovieIndex])
           .then((movie) => {
             newItems[savedMovieIndex] = movie;
 
@@ -64,7 +62,7 @@ export const Movies = () => {
             });
           });
     } else {
-      deleteSavedMovie({ token, id: newItems[savedMovieIndex].id })
+      api.deleteMovie(newItems[savedMovieIndex].id)
           .then(() => {
             newItems[savedMovieIndex] = {
               ...newItems[savedMovieIndex],
