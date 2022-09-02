@@ -24,7 +24,7 @@ import Sucsess from "../../images/sucsess.svg"
 import Fail from "../../images/fail.svg"
 
 function App() {
-      const [currentUser, setCurrentUser] = useState({});
+      const [currentUser, setCurrentUser] = useState(null);
       const [isLogged, setIsLogged] = useState(false);
       const [token, setToken] = useState("");
       const [loginError, setLoginError] = useState("");
@@ -47,7 +47,6 @@ function App() {
       
       function tokenCheck() {
         const jwt = localStorage.getItem("jwt");
-
         if (jwt) {
           setToken(jwt);
           MainApi.getContent(jwt)

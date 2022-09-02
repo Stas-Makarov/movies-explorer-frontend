@@ -1,9 +1,6 @@
-const BASE_URL = 'https://api.s.d.domainname.students.nomoredomains.xyz';
+import { normalizeMovie, handleResponse } from './utils';
 
-const handleResponse = (res) => {
-  if (res.ok) return res.json();
-  else return Promise.reject(res.status);
-};
+const BASE_URL = '';
 
 export const register = ({ email, password, name }) => {
   return fetch(`${BASE_URL}/signup`, {
@@ -56,7 +53,9 @@ export const getSavedMovies = (token) => {
       Authorization: `Bearer ${token}`,
     },
     credentials: 'include',
-  }).then((res) => handleResponse(res));
+  })
+  .then((res) => handleResponse(res))
+  .then((items) => items.map(normalizeMovie));
 };
 
 export const deleteSavedMovie = ({ token, id }) => {
@@ -67,7 +66,22 @@ export const deleteSavedMovie = ({ token, id }) => {
       Authorization: `Bearer ${token}`,
     },
     credentials: 'include',
-  }).then((res) => handleResponse(res));
+  })
+  .then((res) => handleResponse(res))
+  .then((res) => {    
+    const searchResult = localStorage.getItem('searchResult');
+    if (searchResult) {
+      const parsedSearchResult = JSON.parse(searchResult);
+      const savedMovieIndex = parsedSearchResult.items.findIndex((item) => item.id === id);
+      if (savedMovieIndex !== -1) {
+        parsedSearchResult.items[savedMovieIndex] = {
+          ...parsedSearchResult.items[savedMovieIndex],
+          owner: undefined
+        };
+        localStorage.setItem('searchResult', JSON.stringify(parsedSearchResult));
+      }
+    }
+  });
 };
 
 export const saveMovie = ({ token, movie }) => {
@@ -91,7 +105,22 @@ export const saveMovie = ({ token, movie }) => {
       nameEN: movie.nameEN,
     }),
     credentials: 'include',
-  }).then((res) => handleResponse(res));
+  })
+  .then((res) => handleResponse(res))
+  .then((data) => {
+    const savedMovie = normalizeMovie({...data, movieId: movie.movieId});
+
+    const searchResult = localStorage.getItem('searchResult');
+    if (searchResult) {
+      const parsedSearchResult = JSON.parse(searchResult);
+      const savedMovieIndex = parsedSearchResult.items.findIndex((item) => item.movieId === savedMovie.movieId);
+      if (savedMovieIndex !== -1) {
+        parsedSearchResult.items[savedMovieIndex] = savedMovie;
+        localStorage.setItem('searchResult', JSON.stringify(parsedSearchResult));
+      }
+    }
+    return savedMovie;
+  });
 };
 
 export const editUserProfile = ({ token, name, email }) => {

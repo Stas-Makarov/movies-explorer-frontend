@@ -5,69 +5,79 @@ import { useAuth } from "../../hooks/useAuth";
 import { MovieCardList } from "../MovieCardList/MovieCardList";
 import { SearchForm } from "../SearchForm/SearchForm";
 import { Footer } from "../Footer/Footer";
-import { getContent, saveMovie } from '../../utils/MainApi';
-import { search, normalizeMovie } from '../../utils/utils';
+import { saveMovie, deleteSavedMovie } from '../../utils/MainApi';
+import { getInitialMovies  } from '../../utils/MoviesApi';
+import { search } from '../../utils/utils';
 
 import "./Movies.css";
 
 export const Movies = () => {
-  const [items, setItems] = useState([]);
   const [loadingStatus, setLoadingStatus] = useState('idle');
-  const [searchResult, setSearchResult] = useState([]);
-  const [filter, setFilter] = useState({});
+  const [searchResult, setSearchResult] = useState({
+    items: [],
+    text: '',
+    onlyShortMovies: false,
+  });
 
   const token = useAuth();
 
   useEffect(() => {
     const getData = () => {
       setLoadingStatus('loading');
-      const movies = localStorage.getItem('movies');
-      if (movies) {
-        setItems(JSON.parse(movies));
-        setLoadingStatus('idle');
-        return;
+      const searchResult = localStorage.getItem('searchResult');
+      if (searchResult) {
+        const parsedSearchResult = JSON.parse(searchResult);
+        setSearchResult(parsedSearchResult);
       }
-
-      getContent(token).then((items) => {
-        setItems(normalizeMovie(items));
-        setLoadingStatus('idle');
-      });
+      setLoadingStatus('idle');
     }
 
     getData();
-  }, [token]);
-
-  useEffect(() => {
-    localStorage.setItem('movies', JSON.stringify(items));
-  }, [items]);
-
-  useEffect(() => {
-    const filter = localStorage.getItem('filter');
-    if (filter) {
-      const prevFilter = JSON.parse(filter);
-      setFilter(prevFilter);
-    }
   }, []);
 
-  useEffect(() => {
-    const newSearchResult = search(items, filter.text, filter.onlyShortMovies);
-    localStorage.setItem('filter', JSON.stringify(filter));
-    setSearchResult(newSearchResult);
-  }, [filter, items]);
+  const handleSearchFormSubmit = (text, onlyShortMovies) => {
+    setLoadingStatus('loading');
+    getInitialMovies().then((items) => {
+      const searchResult = {
+        items: search(items, text, onlyShortMovies),
+        text,
+        onlyShortMovies
+      };
+      localStorage.setItem('searchResult', JSON.stringify(searchResult));
+      setSearchResult(searchResult);
+      setLoadingStatus('idle');
+    });
+  };
 
-  const handleSearchFormSubmit = useCallback((text, onlyShortMovies) => {
-    setFilter({ text, onlyShortMovies });
-  }, [setFilter]);
+  const handleMovieSaveInStore = (id, liked) => {
+    const newItems = searchResult.items.slice();
+    const savedMovieIndex = newItems.findIndex((movie) => id === movie.movieId);
 
-  const handleMovieSaveInStore = useCallback((item) => {
-    saveMovie({ token, item })
-          .then((res) => {
-            const movies = [...searchResult, res];
-            localStorage.setItem("savedMovies", JSON.stringify(movies));
-            setSearchResult((prev) => [...prev, res]);
-          })
-          // .catch((err) => setServerError(true));
-  }, [searchResult, token]);
+    if (liked) {
+      saveMovie({ token, movie: newItems[savedMovieIndex] })
+          .then((movie) => {
+            newItems[savedMovieIndex] = movie;
+
+            setSearchResult({
+              ...searchResult,
+              items: newItems
+            });
+          });
+    } else {
+      deleteSavedMovie({ token, id: newItems[savedMovieIndex].id })
+          .then(() => {
+            newItems[savedMovieIndex] = {
+              ...newItems[savedMovieIndex],
+              owner: undefined
+            };
+
+            setSearchResult({
+              ...searchResult,
+              items: newItems
+            });
+          });
+    }
+  };
 
   const [numberMoviesInDisplay, setNumberMoviesInDisplay] = useState(
     () => {
@@ -114,7 +124,7 @@ export const Movies = () => {
     onChangeScreenWidth();
   }, []);
  
-  const dislayItems = searchResult.slice(
+  const dislayItems = searchResult.items.slice(
     0,
     numberMoviesInDisplay
   );
@@ -128,8 +138,11 @@ export const Movies = () => {
       <Header />
       <main>
         <section className="movies">
-        <SearchForm onSubmit={handleSearchFormSubmit}/>
-
+        <SearchForm
+          value={searchResult.text}
+          onlyShortMovies={searchResult.onlyShortMovies}
+          onSubmit={handleSearchFormSubmit}
+        />
           <MovieCardList 
             items={dislayItems}
             onChangeFavorite={handleMovieSaveInStore}
@@ -137,7 +150,7 @@ export const Movies = () => {
 
           />
           <button
-            className={dislayItems.length === items.length ? "movies__more_hide"  : "movies__more"}
+            className={dislayItems.length === searchResult.items.length ? "movies__more_hide"  : "movies__more"}
             type="button"
             onClick={addMoviesInCollectionVisible}
           >

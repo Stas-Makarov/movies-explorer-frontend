@@ -8,13 +8,12 @@ export const MoviesCard = ({
   onChangeFavorite
 }) => {
   const currentUser = useUser();
-
   const [liked, setLiked] = useState(currentUser._id === movie.owner);
 
   function handleChangeFavorite() {
     const currentLiked = !liked;
     setLiked(currentLiked);
-    onChangeFavorite(movie.id, currentLiked);
+    onChangeFavorite(movie.movieId, currentLiked);
   }
 
   return (
@@ -22,7 +21,7 @@ export const MoviesCard = ({
       <div className="card__head">
         <div className="card__name">
           <p className="card__title">{movie.nameRU}</p>
-          <p className="card__duration">{movie.duration}</p>
+          <p className="card__duration">{`${Math.trunc(movie.duration / 60)}ч ${movie.duration % 60}м`}</p>
         </div>
         {onDelete ? (
           <button

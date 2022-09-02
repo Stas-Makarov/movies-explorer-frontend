@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FilterCheckbox } from "../FilterCheckbox/FilterCheckbox";
 import "./SearchForm.css";
 
@@ -10,10 +10,14 @@ export const SearchForm = ({
 }) => {
   const [validForm, setValidForm] = useState(true);
   const [onlyShortFilter, setShortMoviesFilter] = useState(onlyShortMovies);
-  const [textInput, setTextInput] = useState(value);
-
+  const [textInput, setTextInput] = useState('');
   const [isFocused, setFocused] = useState(false);
   const handleFocus = () => setFocused(true);
+
+  useEffect(() => {
+    setShortMoviesFilter(onlyShortMovies);
+    setTextInput(value);
+  }, [value, onlyShortMovies]);
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
@@ -22,6 +26,7 @@ export const SearchForm = ({
 
   const handleChangeFilter = (value) => {
     setShortMoviesFilter(value);
+    onSubmit(textInput, value);
   }
 
   
@@ -43,7 +48,6 @@ export const SearchForm = ({
           placeholder="Фильм"
           minLength="2"
           autoComplete="off"
-          required
         />
         <div className="search-form__right">
           <button

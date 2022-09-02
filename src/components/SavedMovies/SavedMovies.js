@@ -3,8 +3,8 @@ import { MovieCardList } from "../MovieCardList/MovieCardList";
 import { Header } from "../Header/Header";
 import { Footer } from "../Footer/Footer";
 import { SearchForm } from "../SearchForm/SearchForm";
-import { getSavedMovies } from '../../utils/MainApi';
-import { search, normalizeMovie } from '../../utils/utils';
+import { getSavedMovies, deleteSavedMovie } from '../../utils/MainApi';
+import { search } from '../../utils/utils';
 import { useAuth } from '../../hooks/useAuth'; 
 import "./SavedMovies.css";
 
@@ -17,25 +17,14 @@ export const SavedMovies = () => {
   useEffect(() => {
     const getData = () => {
       setLoadingStatus('loading');
-      const savedItems = localStorage.getItem('savedMovies');
-      if (savedItems) {
-        setItems(JSON.parse(savedItems));
-        setLoadingStatus('idle');
-        return;
-      }
-
       getSavedMovies(token).then((items) => {
-        setItems(normalizeMovie(items));
+        setItems(items);
         setLoadingStatus('idle');
       });
     }
 
     getData();
   }, [token]);
-
-  useEffect(() => {
-    localStorage.setItem('savedMovies', JSON.stringify(items));
-  }, [items]);
 
   const [filter, setFilter] = useState({});
 
@@ -48,8 +37,10 @@ export const SavedMovies = () => {
   }, [setFilter]);
 
   const handleDelete = useCallback((id) => {
-    setItems((items) => items.filter((item) => item.id !== id));
-  }, [setItems]);
+    deleteSavedMovie({ token, id }).then(() => {
+      setItems((items) => items.filter((item) => item.id !== id));
+    });
+  }, [setItems, token]);
   
   return (
     <>

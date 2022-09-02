@@ -1,3 +1,5 @@
+import { normalizeMovie, handleResponse } from './utils';
+
 const BASE_URL = "https://api.nomoreparties.co/beatfilm-movies";
 
 export function getInitialMovies() {
@@ -6,10 +8,7 @@ export function getInitialMovies() {
     headers: {
       "Content-Type": "application/json",
     }
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  })
+  .then((res) => handleResponse(res))
+  .then((items) => items.map(normalizeMovie));
 }

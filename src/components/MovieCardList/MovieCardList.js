@@ -24,7 +24,7 @@ export const MovieCardList = ({
         {items.map((item) => (
             <MoviesCard
               key={item.id}
-              movies={item}
+              movie={item}
               onDelete={onDelete}
               onChangeFavorite={onChangeFavorite}
             />
