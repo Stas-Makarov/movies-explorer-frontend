@@ -2,25 +2,11 @@ import { Link } from "react-router-dom";
 import { Navigation } from "../Navigation/Navigation";
 import "./Header.css";
 
-export function Header({
-  isLogged,
-  isMain,
-  isProfile,
-  isMovies,
-  isSavedMovies,
-  onClick,
-}) {
+export function Header() {
   return (
     <header className="header">
       <Link className="header__logo" to="/"></Link>
-      <Navigation 
-        isLogged={isLogged}
-        isMain={isMain}
-        isProfile={isProfile}
-        isMovies={isMovies}
-        isSavedMovies={isSavedMovies}
-        onClick={onClick}
-      />
+      <Navigation />
     </header>
   );
 };

@@ -15,13 +15,7 @@ export const Main = ({
 }) => {
   return (
     <>
-      <Header
-        isLogged={isLogged}
-        isMain={isMain}
-        isMovies={isMovies}
-        isSavedMovies={isSavedMovies}
-        isProfile={isProfile}
-      />
+      <Header />
       <main>
         <Promo 
           isLogged={isLogged}

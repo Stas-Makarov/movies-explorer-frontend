@@ -1,45 +1,43 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import { FilterCheckbox } from "../FilterCheckbox/FilterCheckbox";
 import "./SearchForm.css";
 
 export const SearchForm = ({
-  isSaved,
-  searchMovies,
-  searchSavedMovies,
-  isFilterMovies,
-  changeFilter,
-  isFilterSavedMovies,
+  value = "",
+  onlyShortMovies = false,
+  onSubmit
 }) => {
   const [validForm, setValidForm] = useState(true);
-  const [textInput, setTextInput] = useState("");
+  const [onlyShortFilter, setShortMoviesFilter] = useState(onlyShortMovies);
+  const [textInput, setTextInput] = useState('');
   const [isFocused, setFocused] = useState(false);
   const handleFocus = () => setFocused(true);
 
   useEffect(() => {
-    if (!isSaved) {
-      setTextInput(localStorage.getItem("searchText"));
-    }
-  }, [setTextInput, isSaved]);
+    setShortMoviesFilter(onlyShortMovies);
+    setTextInput(value);
+  }, [value, onlyShortMovies]);
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    onSubmit(textInput, onlyShortFilter);
+  }
+
+  const handleChangeFilter = (value) => {
+    setShortMoviesFilter(value);
+    onSubmit(textInput, value);
+  }
+
   
   function handleChangeInput(e) {
     setTextInput(e.target.value);
     setValidForm(e.target.checkValidity());
   }
 
-  function handleSearchMovies(e) {
-    e.preventDefault();
-    searchMovies(textInput);
-    localStorage.setItem("searchText", textInput);
-  }
-
-  function handleSearchSavedMovies(e) {
-    e.preventDefault();
-    searchSavedMovies(textInput);
-  }
   return (
     <>
-      <form className="search-form" onSubmit={isSaved ? handleSearchSavedMovies : handleSearchMovies}>
+      <form className="search-form" onSubmit={handleSubmit}>
         <div className="search-form__icon"></div>
         <input
           className="search-form__input"
@@ -50,7 +48,6 @@ export const SearchForm = ({
           placeholder="Фильм"
           minLength="2"
           autoComplete="off"
-          required
         />
         <div className="search-form__right">
           <button
@@ -61,18 +58,16 @@ export const SearchForm = ({
         </div>
         <div className="filter-checkbox">
           <FilterCheckbox 
-            isFilterMovies={isFilterMovies}
-            changeFilter={changeFilter}
-            isFilterSavedMovies={isFilterSavedMovies}
+            onChange={handleChangeFilter}
+            value={onlyShortFilter}
           />
         </div>
       </form>
       <span className="search-form__error">{!validForm || (isFocused && !textInput)? "Нужно ввести ключевое слово" : ""}</span>
       <div className="filter-checkbox_mobile">
         <FilterCheckbox
-          isFilterMovies={isFilterMovies}
-          changeFilter={changeFilter}
-          isFilterSavedMovies={isFilterSavedMovies} 
+          onChange={handleChangeFilter}
+          value={onlyShortFilter}
         />
       </div>
     </>
