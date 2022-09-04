@@ -7,8 +7,8 @@ export const MoviesCard = ({
   onDelete,
   onChangeFavorite
 }) => {
-  const currentUser = useUser();
-  const [liked, setLiked] = useState(currentUser._id === movie.owner);
+  const { user } = useUser();
+  const [liked, setLiked] = useState(user._id === movie.owner);
 
   function handleChangeFavorite() {
     const currentLiked = !liked;

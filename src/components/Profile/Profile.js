@@ -1,17 +1,16 @@
 import React from "react";
-import { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./Profile.css";
 import { Header } from "../Header/Header";
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { useUser } from "../../hooks/useUser";
 import { useValidation } from "../../hooks/useValidation";
 
 export const Profile = ({
-  onSignOut,
   changeProfile,
   profileError,
   setProfileError,
 }) => {
-  const currentUser = useContext(CurrentUserContext);
+  const { user, signOut } = useUser();
   const nameRef = useRef("");
   const emailRef = useRef("");
   const { handleChange, errors, isValid, resetForm } = useValidation({
@@ -32,7 +31,7 @@ export const Profile = ({
 
   function handleClickSignOut() {
     resetForm();
-    onSignOut();
+    signOut();
   }
 
   function handleChangeInput(e) {
@@ -44,8 +43,8 @@ export const Profile = ({
 
   useEffect(() => {
     if (
-      nameRef.current.value === currentUser.name &&
-      emailRef.current.value === currentUser.email
+      nameRef.current.value === user.name &&
+      emailRef.current.value === user.email
     ) {
       setIsUpdate(false);
     } else {
@@ -54,8 +53,7 @@ export const Profile = ({
   }, [
     nameRef.current.value,
     emailRef.current.value,
-    currentUser.name,
-    currentUser.email,
+    user,
   ]);
 
   return (
@@ -63,7 +61,7 @@ export const Profile = ({
       <Header />
       <main>
         <section className="profle">
-        <h1 className="profile__title">Привет, {currentUser.name}</h1>
+        <h1 className="profile__title">Привет, {user.name}</h1>
         <form className="profile__form" onSubmit={onFormSumbit}>
           <div className="profile__fields">
             <div className="profile__field">
@@ -73,7 +71,7 @@ export const Profile = ({
                 name="name"
                 ref={nameRef}
                 values={nameRef.current.value}
-                defaultValue={currentUser.name}
+                defaultValue={user.name}
                 pattern="[а-яА-Яa-zA-ZёË\- ]{1,}"
                 type="text"
                 onChange={handleChangeInput}
@@ -89,7 +87,7 @@ export const Profile = ({
                 className="profile__input"
                 name="email"
                 ref={emailRef}
-                defaultValue={currentUser.email}
+                defaultValue={user.email}
                 values={emailRef.current.value}
                 onChange={handleChangeInput}
                 pattern="[^@\s]+@[^@\s]+\.[^@\s]+"

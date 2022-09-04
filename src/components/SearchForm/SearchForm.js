@@ -11,28 +11,36 @@ export const SearchForm = ({
   const [validForm, setValidForm] = useState(true);
   const [onlyShortFilter, setShortMoviesFilter] = useState(onlyShortMovies);
   const [textInput, setTextInput] = useState('');
-  const [isFocused, setFocused] = useState(false);
-  const handleFocus = () => setFocused(true);
-
+  
   useEffect(() => {
     setShortMoviesFilter(onlyShortMovies);
     setTextInput(value);
   }, [value, onlyShortMovies]);
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (textInput === '') {
+      setValidForm(false);
+      return;
+    }
     onSubmit(textInput, onlyShortFilter);
   }
 
   const handleChangeFilter = (value) => {
+    if (textInput === '') {
+      setValidForm(false);
+      return;
+    }
     setShortMoviesFilter(value);
     onSubmit(textInput, value);
   }
 
   
   function handleChangeInput(e) {
-    setTextInput(e.target.value);
-    setValidForm(e.target.checkValidity());
+    const value = e.target.value.trim(); 
+    setTextInput(value);
+    setValidForm(value !== '');
   }
 
   return (
@@ -43,10 +51,8 @@ export const SearchForm = ({
           className="search-form__input"
           onChange={handleChangeInput}
           value={textInput}
-          onFocus={handleFocus}
           type="text"
           placeholder="Фильм"
-          minLength="2"
           autoComplete="off"
         />
         <div className="search-form__right">
@@ -63,7 +69,7 @@ export const SearchForm = ({
           />
         </div>
       </form>
-      <span className="search-form__error">{!validForm || (isFocused && !textInput)? "Нужно ввести ключевое слово" : ""}</span>
+      <span className="search-form__error">{!validForm ? "Нужно ввести ключевое слово" : ""}</span>
       <div className="filter-checkbox_mobile">
         <FilterCheckbox
           onChange={handleChangeFilter}

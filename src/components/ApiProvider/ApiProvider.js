@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useLayoutEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from '../../hooks/useAuth';
 import { ApiContext } from '../../contexts/ApiContext';
+import { useUser } from '../../hooks/useUser';
 import {
     register,
     authorize,
@@ -13,25 +13,37 @@ import {
     editProfile,
 } from '../../services/api';
 
+import { SIGNIN_ROUTE } from '../../constants';
+
 export const ApiProvider = ({ children }) => {
-    const token = useAuth();
     const history = useNavigate();
+    const { setUser } = useUser();
+    const [unauthorized, setUnauthorized] = useState(false);
+
+    useLayoutEffect(() => {
+      if (unauthorized) {
+        setUnauthorized(false);
+        setUser(null);
+        history(SIGNIN_ROUTE, { replace: true });
+      }
+    }, [setUser, history, setUnauthorized, unauthorized]);
 
     const handleUnauthorized = (status) => {
         if (status === 401) {
-            history('/signin', { replace: true });
+            setUnauthorized(true);          
+            return Promise.reject(status);
         }
     }
 
     const api = {
         register,
         authorize,
-        getMovies,
-        getSavedMovies: () => getSavedMovies(token).catch(handleUnauthorized),
-        getProfile: () => getProfile(token).catch(handleUnauthorized),
-        deleteMovie: (id) => deleteMovie(token, id).catch(handleUnauthorized),
-        saveMovie: (movie) => saveMovie(token, movie).catch(handleUnauthorized),
-        editProfile: (userData) => editProfile(token, userData).catch(handleUnauthorized),
+        getMovies: () => getMovies().catch(handleUnauthorized),
+        getSavedMovies: () => getSavedMovies().catch(handleUnauthorized),
+        getProfile: () => getProfile().catch(handleUnauthorized),
+        deleteMovie: (id) => deleteMovie(id).catch(handleUnauthorized),
+        saveMovie: (movie) => saveMovie(movie).catch(handleUnauthorized),
+        editProfile: (userData) => editProfile(userData).catch(handleUnauthorized),
     }
 
     return (

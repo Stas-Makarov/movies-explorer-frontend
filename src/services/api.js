@@ -1,6 +1,7 @@
 import { normalizeMovie, handleResponse } from '../utils/utils';
 
-const BASE_URL = 'https://api.s.d.domainname.students.nomoredomains.xyz';
+// const BASE_URL = 'https://api.s.d.domainname.students.nomoredomains.xyz';
+const BASE_URL = '';
 
 const BEATFILM_URL = "https://api.nomoreparties.co/beatfilm-movies";
 
@@ -35,36 +36,23 @@ export const authorize = ({ email, password }) => {
 };
 
 
-export const getProfile = (token) => {
+export const getProfile = () => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
       'Accept': 'application/json',
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
     credentials: 'include',
   }).then((res) => handleResponse(res));
 };
 
-export function getMovies() {
-  return fetch(BEATFILM_URL, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    }
-  })
-  .then((res) => handleResponse(res))
-  .then((items) => items.map(normalizeMovie));
-}
-
-export const getSavedMovies = (token) => {
+export const getSavedMovies = () => {
   return fetch(`${BASE_URL}/movies`, {
     method: "GET",
     headers: {
       'Accept': 'application/json',
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
     credentials: 'include',
   })
@@ -72,12 +60,35 @@ export const getSavedMovies = (token) => {
   .then((items) => items.map(normalizeMovie));
 };
 
-export const deleteMovie = (token, id) => {
+export function getMovies() {
+  return Promise.all([
+    fetch(BEATFILM_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then((res) => handleResponse(res))
+    .then((items) => items.map(normalizeMovie)),
+    getSavedMovies()
+  ]).then(([movies, savedMovies]) => {
+      const savedMovieMap = new Map();
+      
+      savedMovies.forEach((movie) => {
+        savedMovieMap.set(movie.movieId, movie);
+      });
+
+      const res = movies.map((movie) => savedMovieMap.get(movie.movieId) || movie);
+
+      return res;
+    });
+};
+
+export const deleteMovie = (id) => {
   return fetch(`${BASE_URL}/movies/${id}`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
     credentials: 'include',
   })
@@ -98,12 +109,11 @@ export const deleteMovie = (token, id) => {
   });
 };
 
-export const saveMovie = (token, movie) => {
+export const saveMovie = (movie) => {
   return fetch(`${BASE_URL}/movies`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
       country: movie.country,
@@ -137,13 +147,12 @@ export const saveMovie = (token, movie) => {
   });
 };
 
-export const editProfile = ( token, { name, email }) => {
+export const editProfile = ({ name, email }) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "PATCH",
     headers: {
       "Accept": "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
       name,

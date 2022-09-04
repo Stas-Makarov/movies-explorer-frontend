@@ -12,7 +12,7 @@ export const Navigation = () => {
     setIsShowBurgerMenu(false);
   };
 
-  const user = useUser(); 
+  const { user } = useUser(); 
   
   return (
     <nav className="navigation">

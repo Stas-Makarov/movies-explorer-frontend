@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Header } from "../Header/Header";
 import { useApi } from "../../hooks/useApi";
+import { useDisplayCount } from "../../hooks/useDisplayCount";
 import { MovieCardList } from "../MovieCardList/MovieCardList";
 import { SearchForm } from "../SearchForm/SearchForm";
 import { Footer } from "../Footer/Footer";
@@ -77,50 +78,11 @@ export const Movies = () => {
     }
   };
 
-  const [numberMoviesInDisplay, setNumberMoviesInDisplay] = useState(
-    () => {
-      const windowWidth = window.innerWidth;
-      if (windowWidth > 1279) {
-        return 16;
-      } else if (windowWidth >= 990) {
-        return 12;
-      } else if (windowWidth >= 500) {
-        return 8;
-      } else return 5;
-    }
-  );
+  const displaySettings = useDisplayCount();
 
-  const [numberMoviesAdd, setNumberMoviesAdd] = useState(() => {
-    const windowWidth = window.innerWidth;
-    if (windowWidth > 1279) {
-      return 4;
-    } else if (windowWidth >= 990) {
-      return 3;
-    } else if (windowWidth >= 500) {
-      return 2;
-    } else return 2;
-  });
+  const [numberMoviesInDisplay, setNumberMoviesInDisplay] = useState(displaySettings.initialDisplayCount);
 
-  function onChangeScreenWidth() {
-    const windowWidth = window.innerWidth;
-    if (windowWidth > 1279) {
-      setNumberMoviesInDisplay(16);
-      setNumberMoviesAdd(4);
-    } else if (windowWidth >= 990) {
-      setNumberMoviesInDisplay(12);
-      setNumberMoviesAdd(3);
-    } else if (windowWidth >= 500) {
-      setNumberMoviesInDisplay(8);
-      setNumberMoviesAdd(2);
-    } else {
-      setNumberMoviesInDisplay(5);
-      setNumberMoviesAdd(2);
-    }
-  }
-
-  useEffect(() => {
-    onChangeScreenWidth();
-  }, []);
+  useEffect(() => setNumberMoviesInDisplay(displaySettings.initialDisplayCount), [displaySettings.initialDisplayCount]);
  
   const dislayItems = searchResult.items.slice(
     0,
@@ -128,7 +90,7 @@ export const Movies = () => {
   );
 
   function addMoviesInCollectionVisible() {
-    setNumberMoviesInDisplay((prevState) => prevState + numberMoviesAdd);
+    setNumberMoviesInDisplay((prevState) => prevState + displaySettings.loadingItemsCount);
   }
 
   return (
