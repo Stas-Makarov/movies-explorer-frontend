@@ -78,11 +78,9 @@ export const Movies = () => {
     }
   };
 
-  const displaySettings = useDisplayCount();
+  const [displayCount, loadingCount] = useDisplayCount();
 
-  const [numberMoviesInDisplay, setNumberMoviesInDisplay] = useState(displaySettings.initialDisplayCount);
-
-  useEffect(() => setNumberMoviesInDisplay(displaySettings.initialDisplayCount), [displaySettings.initialDisplayCount]);
+  const [numberMoviesInDisplay, setNumberMoviesInDisplay] = useState(displayCount);
  
   const dislayItems = searchResult.items.slice(
     0,
@@ -90,7 +88,7 @@ export const Movies = () => {
   );
 
   function addMoviesInCollectionVisible() {
-    setNumberMoviesInDisplay((prevState) => prevState + displaySettings.loadingItemsCount);
+    setNumberMoviesInDisplay((prevState) => prevState + loadingCount);
   }
 
   return (

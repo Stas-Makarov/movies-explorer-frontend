@@ -31,7 +31,7 @@ export const Profile = ({
 
   function handleClickSignOut() {
     resetForm();
-    signOut();
+    signOut();    
   }
 
   function handleChangeInput(e) {

@@ -4,7 +4,6 @@ const BASE_URL = 'https://api.s.d.domainname.students.nomoredomains.xyz';
 
 const BEATFILM_URL = "https://api.nomoreparties.co/beatfilm-movies";
 
-
 export const register = ({ email, password, name }) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
@@ -157,6 +156,17 @@ export const editProfile = ({ name, email }) => {
       name,
       email,
     }),
+    credentials: 'include',
+  }).then((res) => handleResponse(res));
+};
+
+export const signout = () => {
+  return fetch(`${BASE_URL}/signout`, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      "Content-Type": "application/json"
+    },
     credentials: 'include',
   }).then((res) => handleResponse(res));
 };
