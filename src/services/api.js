@@ -1,6 +1,7 @@
 import { normalizeMovie, handleResponse } from '../utils/utils';
 
-const BASE_URL = 'https://api.s.d.domainname.students.nomoredomains.xyz';
+// const BASE_URL = 'https://api.s.d.domainname.students.nomoredomains.xyz';
+const BASE_URL = '';
 
 const BEATFILM_URL = "https://api.nomoreparties.co/beatfilm-movies";
 

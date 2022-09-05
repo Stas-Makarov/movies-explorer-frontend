@@ -39,7 +39,7 @@ export const useDisplayCount = () => {
     useEffect(() => {
         const changeResolution = debounce(() => {
             setLoadingCount(getLoadingCount());
-        });
+        }, 500);
         window.addEventListener("resize", changeResolution);
         return () => {
             document.removeEventListener('resize', changeResolution);
