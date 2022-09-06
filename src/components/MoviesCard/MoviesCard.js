@@ -1,62 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
+import { useUser } from '../../hooks/useUser';
 import "./MoviesCard.css";
-import cardImage from "../../images/card.png"
 
-export const MoviesCard = () => {
+export const MoviesCard = ({
+  movie,
+  onDelete,
+  onChangeFavorite
+}) => {
+  const { user } = useUser();
+  const [liked, setLiked] = useState(user._id === movie.owner);
+
+  function handleChangeFavorite() {
+    const currentLiked = !liked;
+    setLiked(currentLiked);
+    onChangeFavorite(movie.movieId, currentLiked);
+  }
 
   return (
-    <>
-      <li className="card">
+    <li className="card" id={movie.id}>
       <div className="card__head">
         <div className="card__name">
-          <p className="card__title">33 слова о дизайне</p>
-          <p className="card__duration">1ч 47мин</p>
+          <p className="card__title">{movie.nameRU}</p>
+          <p className="card__duration">{`${Math.trunc(movie.duration / 60)}ч ${movie.duration % 60}м`}</p>
         </div>
-        <button
-          type="button"
-          className="card__delete"
+        {onDelete ? (
+          <button
+            type="button"
+            onClick={() => onDelete(movie.id)}
+            className="card__delete"
           ></button>
-      </div>
-      <img
-        className="card__image"
-        alt="movie"
-        src={cardImage}
-      />
-    </li>
-    <li className="card">
-      <div className="card__head">
-        <div className="card__name">
-          <p className="card__title">33 слова о дизайне</p>
-          <p className="card__duration">1ч 47мин</p>
-        </div>
-        <button
-          type="button"
-          className="card__delete"
+        ) : (
+          <button
+            type="button"
+            onClick={handleChangeFavorite}
+            className={`card__like ${liked ? "card__like_active" : " "}`}
           ></button>
+        )}
       </div>
-      <img
-        className="card__image"
-        alt="movie"
-        src={cardImage}
-      />
+      <a
+        href={movie.trailerLink}
+        className="card__trailer"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          className="card__image"
+          alt={movie.nameRU}
+          src={movie.image}
+        />
+      </a>
     </li>
-    <li className="card">
-      <div className="card__head">
-        <div className="card__name">
-        <p className="card__title">33 слова о дизайне</p>
-        <p className="card__duration">1ч 47мин</p>
-      </div>
-      <button
-        type="button"
-        className="card__delete"
-        ></button>
-    </div>
-    <img
-      className="card__image"
-      alt="movie"
-      src={cardImage}
-    />
-  </li>
-    </>
   );
 };
